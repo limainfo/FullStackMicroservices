@@ -83,20 +83,19 @@ services:
   openldap:
     image: bitnami/openldap:latest
     container_name: openldap-server
-    networks:
-      - evaldo-full-stack
     environment:
       - LDAP_ROOT=dc=evaldofullstack,dc=com,dc=br
       - LDAP_ADMIN_USERNAME=admin
       - LDAP_ADMIN_PASSWORD=ldapadmin
-      - LDAP_CUSTOM_SCHEMA_DIR=/ldifs/
     volumes:
-      - ./ldap-data/ldifs:/ldifs
+      - ./ldap-data/ldifs:/docker-entrypoint-initdb.d
       - openldap_data:/bitnami
     ports:
       - "1389:1389"
       - "1636:1636"
-
+    networks:
+      evaldo-full-stack:
+        ipv4_address: 10.0.0.2
 networks:
   evaldo-full-stack:
     driver: bridge
@@ -108,17 +107,19 @@ volumes:
   openldap_data:
 ```
 
+Desligue o contêiner:
+
+```bash
+docker-compose down -v
+```
+
 Execute o contêiner:
 
 ```bash
 docker-compose up -d
 ```
 
-Desligue o contêiner:
 
-```bash
-docker-compose down -v
-```
 
 ## Passo 4: Verificar a inicialização e carregar os dados
 
@@ -133,7 +134,12 @@ sudo apt-get install ldap-utils
 Execute uma busca LDAP:
 
 ```bash
-ldapsearch -x -H ldap://localhost:1389 -b "dc=evaldofullstack,dc=com,dc=br" -D "cn=admin,dc=evaldofullstack,dc=com,dc=br" -w ldapadmin
+ldapsearch -x -H ldap://localhost:1389 \
+  -D "cn=admin,dc=evaldofullstack,dc=com,dc=br" -w ldapadmin \
+  -b "ou=People,dc=evaldofullstack,dc=com,dc=br" \
+  "(objectClass=customPerson)" \
+  uid cn sn cpf rg funcao local nomeGuerra
+
 ```
 
 Você deve ver os usuários `usuario` e `admin` listados com seus atributos.
