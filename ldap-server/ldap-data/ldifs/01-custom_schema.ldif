@@ -1,0 +1,9 @@
+dn: cn=custom,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: custom
+olcAttributeTypes: ( 1.3.6.1.4.1.99999.1 NAME 'cpf' DESC 'CPF' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.99999.2 NAME 'rg' DESC 'RG' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.99999.3 NAME 'funcao' DESC 'Função' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.99999.4 NAME 'local' DESC 'Local' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.99999.5 NAME 'nomeGuerra' DESC 'Nome de Guerra' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcObjectClasses: ( 1.3.6.1.4.1.99999.10 NAME 'customPerson' SUP inetOrgPerson STRUCTURAL MAY ( cpf $ rg $ funcao $ local $ nomeGuerra ) )
