@@ -1,0 +1,26 @@
+services:
+  openldap:
+    image: bitnami/openldap:latest
+    container_name: openldap-server
+    environment:
+      - LDAP_ROOT=dc=evaldofullstack,dc=com,dc=br
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=ldapadmin
+    volumes:
+      - ./ldap-data/ldifs:/docker-entrypoint-initdb.d
+      - openldap_data:/bitnami
+    ports:
+      - "1389:1389"
+      - "1636:1636"
+    networks:
+      evaldo-full-stack:
+        ipv4_address: 10.0.0.2
+networks:
+  evaldo-full-stack:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
+
+volumes:
+  openldap_data:
