@@ -1,0 +1,24 @@
+FROM bitnami/nginx:latest
+
+# Mudar para o usuário root para instalar pacotes
+USER root
+
+# Instalar dependências necessárias
+RUN install_packages wget tar
+
+# Instalar o OpenJDK (substitua pelos links do Java 22 se disponível)
+RUN mkdir -p /usr/java && \
+    cd /usr/java && \
+    wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21%2B35/OpenJDK21U-jdk_x64_linux_hotspot_21_35.tar.gz && \
+    tar -xzvf OpenJDK21U-jdk_x64_linux_hotspot_21_35.tar.gz && \
+    rm OpenJDK21U-jdk_x64_linux_hotspot_21_35.tar.gz
+
+# Definir variáveis de ambiente para o Java
+ENV JAVA_HOME=/usr/java/jdk-21+35
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+# Retornar ao usuário não root padrão da imagem
+USER 1001
+
+# Expor a porta 80
+EXPOSE 80
