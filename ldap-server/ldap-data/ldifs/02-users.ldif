@@ -1,0 +1,33 @@
+dn: ou=People,dc=evaldofullstack,dc=com,dc=br
+objectClass: organizationalUnit
+ou: People
+
+dn: uid=usuario,ou=People,dc=evaldofullstack,dc=com,dc=br
+objectClass: inetOrgPerson
+objectClass: customPerson
+cn: Usuário
+sn: Usuário
+uid: usuario
+userPassword: ldapusuario
+cpf: 12345678900
+rg: 1234567
+funcao: chefe
+local: setor pessoal
+nomeGuerra: usuário
+title: CV
+postalAddress: Brasília
+
+dn: uid=admin,ou=People,dc=evaldofullstack,dc=com,dc=br
+objectClass: inetOrgPerson
+objectClass: customPerson
+cn: Admin
+sn: Admin
+uid: admin
+userPassword: ldapadmin
+cpf: 45678912300
+rg: 7654321
+funcao: gerente
+local: setor pessoal
+nomeGuerra: admin
+title: CV
+postalAddress: Brasília
