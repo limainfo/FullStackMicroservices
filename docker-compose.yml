@@ -1,1 +1,90 @@
+services:
+  openldap:
+    image: bitnami/openldap:latest
+    container_name: openldap-server
+    environment:
+      - LDAP_ROOT=dc=evaldofullstack,dc=com,dc=br
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=ldapadmin
+    volumes:
+      - ./ldap-data/ldifs:/docker-entrypoint-initdb.d
+    ports:
+      - "1389:1389"
+      - "1636:1636"
+    networks:
+      evaldo-full-stack:
+        ipv4_address: 10.0.0.2
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.0
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      DB_VENDOR: h2
+    ports:
+      - "8181:8080"
+    networks:
+      evaldo-full-stack:
+        ipv4_address: 10.0.0.3
+    command: start-dev
+    volumes:
+      - ./custom-mapper:/opt/keycloak/providers        
+  postgresql:
+    image: sameersbn/postgresql:latest
+    container_name: postgresql
+    environment:
+      PG_PASSWORD: adminpassword
+      DB_NAME: mydatabase
+      PG_TRUST_LOCALNET: true
+    volumes:
+      - postgresql_data:/var/lib/postgresql
+
+    ports:
+      - "5432:5432"
+    networks:
+      evaldo-full-stack:
+        ipv4_address: 10.0.0.4
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx-java
+    container_name: nginx
+    environment:
+      - NGINX_ENABLE_STREAM=yes
+    volumes:
+      - ./www:/app
+      - ./angular.conf:/opt/bitnami/nginx/conf/server_blocks/my_server_block.conf:ro
+    ports:
+      - "80:80"
+    networks:
+      evaldo-full-stack:
+        ipv4_address: 10.0.0.5
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+    volumes:
+      - ./kafka-persistence:/bitnami/kafka
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    networks:
+      evaldo-full-stack:
+        ipv4_address: 10.0.0.6        
+    
+networks:
+  evaldo-full-stack:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
+
+volumes:
+  postgresql_data:
