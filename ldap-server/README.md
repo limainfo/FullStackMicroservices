@@ -6,7 +6,8 @@ Para criar um servidor LDAP com usuários pré-definidos e atributos personaliza
 Crie uma rede Docker chamada `evaldo-full-stack` com o subnet `10.0.0.0/24` para controlar o IP dos contêineres:
 
 ```bash
-docker network create --subnet=10.0.0.0/24 evaldo-full-stack
+docker network create evaldo-full-stack --driver bridge
+
 ```
 
 ## Passo 2: Preparar os arquivos LDIF
@@ -88,12 +89,13 @@ services:
       - LDAP_ROOT=dc=evaldofullstack,dc=com,dc=br
       - LDAP_ADMIN_USERNAME=admin
       - LDAP_ADMIN_PASSWORD=ldapadmin
+      - LDAP_CUSTOM_SCHEMA_DIR=/ldifs/01-custom_schema.ldif
     volumes:
       - ./ldap-data/ldifs:/ldifs
       - openldap_data:/bitnami
     ports:
-      - "389:389"
-      - "636:636"
+      - "1389:1389"
+      - "1636:1636"
 
 networks:
   evaldo-full-stack:
@@ -112,6 +114,12 @@ Execute o contêiner:
 docker-compose up -d
 ```
 
+Desligue o contêiner:
+
+```bash
+docker-compose down -v
+```
+
 ## Passo 4: Verificar a inicialização e carregar os dados
 
 O contêiner irá automaticamente aplicar os arquivos LDIF ao iniciar. Para verificar se os usuários foram adicionados, você pode usar um cliente LDAP como o `ldapsearch`.
@@ -125,7 +133,7 @@ sudo apt-get install ldap-utils
 Execute uma busca LDAP:
 
 ```bash
-ldapsearch -x -H ldap://10.0.0.1 -b "dc=evaldofullstack,dc=com,dc=br" -D "cn=admin,dc=evaldofullstack,dc=com,dc=br" -w ldapadmin
+ldapsearch -x -H ldap://localhost:1389 -b "dc=evaldofullstack,dc=com,dc=br" -D "cn=admin,dc=evaldofullstack,dc=com,dc=br" -w ldapadmin
 ```
 
 Você deve ver os usuários `usuario` e `admin` listados com seus atributos.
