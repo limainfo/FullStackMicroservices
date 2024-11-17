@@ -89,7 +89,7 @@ services:
       - LDAP_ROOT=dc=evaldofullstack,dc=com,dc=br
       - LDAP_ADMIN_USERNAME=admin
       - LDAP_ADMIN_PASSWORD=ldapadmin
-      - LDAP_CUSTOM_SCHEMA_DIR=/ldifs/01-custom_schema.ldif
+      - LDAP_CUSTOM_SCHEMA_DIR=/ldifs/
     volumes:
       - ./ldap-data/ldifs:/ldifs
       - openldap_data:/bitnami
