@@ -78,15 +78,12 @@ postalAddress: Brasília
 Crie um arquivo `docker-compose.yml` no diretório raiz do projeto com o seguinte conteúdo:
 
 ```yaml
-version: '3.7'
-
 services:
   openldap:
     image: bitnami/openldap:latest
     container_name: openldap-server
     networks:
-      evaldo-full-stack:
-        ipv4_address: 10.0.0.1
+      - evaldo-full-stack
     environment:
       - LDAP_ROOT=dc=evaldofullstack,dc=com,dc=br
       - LDAP_ADMIN_USERNAME=admin
