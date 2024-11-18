@@ -14,37 +14,36 @@ Arquitetura completa para microserviços Angular e Java Spring Boot
 Olá! Com base no seu arquivo `docker-compose`, gerei um diagrama de componentes UML que representa os servidores e suas interações.
 
 ```mermaid
+
 graph TD
-    subgraph "Rede evaldo-full-stack (10.0.0.0/24)"
-        Gateway[Gateway\n10.0.0.1]
-        LDAP[OpenLDAP\n10.0.0.2:1389]
-        Keycloak[Keycloak\n10.0.0.3:8181]
-        PostgreSQL[PostgreSQL\n10.0.0.4:5432]
-        Nginx[Nginx\n10.0.0.5]
-        Kafka[Kafka\n10.0.0.6:9092]
-        Frontend[Frontend Angular\n(Microserviços: root-config, autentica, tabelas)]
-        Backend[Backend Spring Boot\n(Microserviços: gateway, eureka, tabelas)]
+    subgraph Rede["Rede evaldo-full-stack (10.0.0.0/24)"]
+        Gateway["Gateway<br>10.0.0.1"]
+        LDAP["OpenLDAP<br>10.0.0.2:1389"]
+        Keycloak["Keycloak<br>10.0.0.3:8181"]
+        PostgreSQL["PostgreSQL<br>10.0.0.4:5432"]
+        Kafka["Kafka<br>10.0.0.6:9092"]
+        Frontend["Nginx<br>10.0.0.5<br>Frontend Angular"]
+        Root["root-config /"]
+        Autentica["/autentica"]
+        Tabelas["/tabelas"]
+        Backend["Java<br>10.0.0.5<br>Backend Spring Boot<br>Microservicos<br>"]
+        JavaGateway["Java Gateway:8080"]
+        JavaEureka["Java Eureka:8761<br>Backend Spring Boot<br>Microservicos<br>gateway, eureka, tabelas"]
+        JavaTabelas["Tabelas:8085"]
     end
 
-    %% Conexões via Gateway
-    Gateway --- LDAP
-    Gateway --- Keycloak
-    Gateway --- PostgreSQL
-    Gateway --- Nginx
-    Gateway --- Kafka
 
-    %% Interações
-    Keycloak -->|Autenticação LDAP| LDAP
+    %% Interacoes
+    LDAP -->|Autenticacao LDAP| Keycloak
     Keycloak -->|Consulta Dados| PostgreSQL
-    Frontend -->|Valida Autenticação| Keycloak
+    Keycloak -->|Autenticacao LDAP| Frontend
     Frontend -->|Comunica com| Backend
-    Backend -->|Obtém Dados| PostgreSQL
-    Backend -->|Obtém Mensagens| Kafka
+    Backend -->|Obtem Dados| PostgreSQL
+    Backend -->|Obtem Mensagens| Kafka
 
     %% Hospedagem
     Nginx -->|Hospeda| Frontend
     Nginx -->|Hospeda| Backend
-
 
 ```
 
