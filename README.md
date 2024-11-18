@@ -6,9 +6,6 @@ Arquitetura completa para microserviços Angular e Java Spring Boot
 * **Descrição Geral:** Este projeto busca criar o ambiente completo com ldap, keycloak, microserviços angular, microserviços java spring boot, banco de dados postgresql e mensageria com kafka.
 * **Pré-requisitos:** (Docker, Java, Angular, PostgreSql, Ldap, Keycloack, Kafka).
 * **Instalação e Configuração:** Há um único docker-composer.yml que vai inicializar todo o ambiente.
-* **Execução:** EM IMPLEMENTAÇÃO: Detalhe como iniciar cada serviço ou utilizar o docker-compose.
-* **Contribuição:** Informe como outros desenvolvedores podem contribuir.
-* **Licença:** Especifique a licença sob a qual o projeto é disponibilizado.
 
 
 ```mermaid
@@ -96,4 +93,3 @@ graph TD
 - O **Nginx** está configurado para servir conteúdo estático da pasta `./www` e utiliza a configuração `angular.conf`, o que sugere que está servindo uma aplicação Angular.
 - O **Keycloak** está configurado com um mapeamento customizado através do volume `./custom-mapper`.
 
-Espero que este diagrama ajude a visualizar a arquitetura dos seus serviços e suas interações!
