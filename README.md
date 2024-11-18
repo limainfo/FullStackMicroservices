@@ -11,8 +11,6 @@ Arquitetura completa para microserviços Angular e Java Spring Boot
 * **Licença:** Especifique a licença sob a qual o projeto é disponibilizado.
 
 
-Olá! Com base no seu arquivo `docker-compose`, gerei um diagrama de componentes UML que representa os servidores e suas interações.
-
 ```mermaid
 
 graph TD
@@ -22,28 +20,34 @@ graph TD
         Keycloak["Keycloak<br>10.0.0.3:8181"]
         PostgreSQL["PostgreSQL<br>10.0.0.4:5432"]
         Kafka["Kafka<br>10.0.0.6:9092"]
-        Frontend["Nginx<br>10.0.0.5<br>Frontend Angular"]
-        Root["root-config /"]
-        Autentica["/autentica"]
-        Tabelas["/tabelas"]
-        Backend["Java<br>10.0.0.5<br>Backend Spring Boot<br>Microservicos<br>"]
-        JavaGateway["Java Gateway:8080"]
-        JavaEureka["Java Eureka:8761<br>Backend Spring Boot<br>Microservicos<br>gateway, eureka, tabelas"]
-        JavaTabelas["Tabelas:8085"]
+        Frontend["Frontend<br>Angular<br>Nginx 10.0.0.5"]
+        Root["Microservico<br>root-config /"]
+        Autentica["Microservico<br>/autentica"]
+        Tabelas["Microservico<br>/tabelas"]
+        Backend["Backend Java Spring Boot"]
+        JavaGateway["Microservico<br>Gateway:8080"]
+        JavaEureka["Microservico<br>Eureka:8761"]
+        JavaTabelas["Microservico<br>Tabelas:8085"]
     end
 
 
     %% Interacoes
-    LDAP -->|Autenticacao LDAP| Keycloak
+    LDAP <-->|Autenticacao LDAP| Keycloak
     Keycloak -->|Consulta Dados| PostgreSQL
-    Keycloak -->|Autenticacao LDAP| Frontend
-    Frontend -->|Comunica com| Backend
-    Backend -->|Obtem Dados| PostgreSQL
-    Backend -->|Obtem Mensagens| Kafka
+    Keycloak <-->|Autenticacao Keycloack| Frontend
+    Root -->|Comunica com| Backend
+    Autentica -->|Comunica com| Backend
+    Tabelas -->|Comunica com| Backend
+    JavaTabelas <-->|Obtem Dados| PostgreSQL
+    JavaTabelas <-->|Obtem Mensagens| Kafka
 
     %% Hospedagem
-    Nginx -->|Hospeda| Frontend
-    Nginx -->|Hospeda| Backend
+    Frontend -->|Hospeda| Root
+    Frontend -->|Hospeda| Autentica
+    Frontend -->|Hospeda| Tabelas
+    Backend -->|Hospeda| JavaGateway
+    JavaGateway -->|Comunica com| JavaEureka
+    JavaGateway -->|Comunica com| JavaTabelas
 
 ```
 
@@ -61,46 +65,6 @@ graph TD
 - **Keycloak** utiliza o **OpenLDAP** para autenticação de usuários via protocolo LDAP.
 - **Keycloak** se conecta ao **PostgreSQL** para operações de leitura e escrita no banco de dados.
 - **Nginx** pode atuar como proxy para o **Kafka**, permitindo o acesso aos serviços de streaming.
-
-**Notas adicionais:**
-
-Entendi, obrigado pelas informações detalhadas. Vou gerar um diagrama UML de componentes que representa as interações conforme você especificou.
-
-Aqui está o diagrama atualizado:
-
-```mermaid
-graph TD
-    subgraph "Rede evaldo-full-stack (10.0.0.0/24)"
-        Gateway["Gateway - 10.0.0.1"]
-        LDAP["OpenLDAP - 10.0.0.2:1389"]
-        Keycloak["Keycloak - 10.0.0.3:8181"]
-        PostgreSQL["PostgreSQL - 10.0.0.4:5432"]
-        Nginx["Nginx - 10.0.0.5"]
-        Kafka["Kafka - 10.0.0.6:9092"]
-        Frontend["Frontend Angular - Microservicos - root-config, autentica, tabelas"]
-        Backend["Backend Spring Boot - Microservicos - gateway, eureka, tabelas"]
-    end
-
-    %% Conexoes via Gateway
-    Gateway --- LDAP
-    Gateway --- Keycloak
-    Gateway --- PostgreSQL
-    Gateway --- Nginx
-    Gateway --- Kafka
-
-    %% Interacoes
-    Keycloak -->|Autenticacao LDAP| LDAP
-    Keycloak -->|Consulta Dados| PostgreSQL
-    Frontend -->|Valida Autenticacao| Keycloak
-    Frontend -->|Comunica com| Backend
-    Backend -->|Obtem Dados| PostgreSQL
-    Backend -->|Obtem Mensagens| Kafka
-
-    %% Hospedagem
-    Nginx -->|Hospeda| Frontend
-    Nginx -->|Hospeda| Backend
-
-```
 
 **Descrição do diagrama:**
 
